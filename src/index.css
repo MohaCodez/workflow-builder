@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.react-flow__node {
+  @apply select-none;
+}
+
+.react-flow__handle {
+  @apply w-3 h-3 bg-blue-500;
+}
+
+.react-flow__handle-top {
+  @apply top-0 -translate-y-1/2;
+}
+
+.react-flow__handle-bottom {
+  @apply bottom-0 translate-y-1/2;
+}
