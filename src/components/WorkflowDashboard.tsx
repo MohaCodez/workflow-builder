@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Plus, Search, Copy, Trash2, Edit3 } from 'lucide-react';
 import { useWorkflowStore } from '../store/workflowStore';
 import { Dialog } from '@headlessui/react';
@@ -33,6 +33,23 @@ export function WorkflowDashboard() {
 
   const handleEditWorkflow = (workflow: typeof workflows[0]) => {
     setCurrentWorkflow(workflow);
+  };
+
+  const formatDate = (timestamp: any) => {
+    if (!timestamp) return '';
+    
+    // Handle Firestore Timestamp
+    if (timestamp?.toDate) {
+      return format(timestamp.toDate(), 'MMM d, yyyy');
+    }
+    
+    // Handle regular timestamp (number)
+    if (typeof timestamp === 'number') {
+      return format(new Date(timestamp), 'MMM d, yyyy');
+    }
+    
+    // Handle string or Date object
+    return format(new Date(timestamp), 'MMM d, yyyy');
   };
 
   return (
@@ -73,13 +90,14 @@ export function WorkflowDashboard() {
                 <p className="text-gray-600 text-sm mt-1">{workflow.description}</p>
                 <div className="flex gap-4 mt-2 text-sm text-gray-500">
                   <span>Version {workflow.version}</span>
-                  <span>Updated {format(workflow.updatedAt, 'MMM d, yyyy')}</span>
+                  <span>Updated {formatDate(workflow.updatedAt)}</span>
                   <span className={`${
+                    !workflow.status ? 'text-gray-500' :
                     workflow.status === 'active' ? 'text-green-500' :
                     workflow.status === 'draft' ? 'text-yellow-500' :
                     'text-gray-500'
                   }`}>
-                    {workflow.status.charAt(0).toUpperCase() + workflow.status.slice(1)}
+                    {workflow.status ? workflow.status.charAt(0).toUpperCase() + workflow.status.slice(1) : 'Unknown'}
                   </span>
                 </div>
               </div>

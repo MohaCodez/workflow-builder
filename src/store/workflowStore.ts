@@ -40,7 +40,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
       createdAt: Date.now(),
       updatedAt: Date.now(),
       version: 1,
-      status: 'draft',
+      status: workflow.status || 'draft',
     };
 
     await saveWorkflow(newWorkflow);
@@ -92,11 +92,14 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
   loadWorkflows: async () => {
     set({ loading: true });
     try {
+      console.log('Loading workflows...');
       const workflows = await getWorkflows();
+      console.log('Workflows loaded:', workflows);
+      console.log('Sample updatedAt:', workflows[0]?.updatedAt, typeof workflows[0]?.updatedAt);
       set({ workflows, loading: false });
     } catch (error) {
       console.error('Failed to load workflows:', error);
-      set({ loading: false });
+      set({ workflows: [], loading: false });
     }
   },
 }));
